@@ -4,6 +4,7 @@ import { useActionState, useMemo, useState } from "react";
 import { CirclePlus, ClipboardPlus, Trash2 } from "lucide-react";
 import { savePedido, type PedidoFormState } from "@/app/pedidos/actions";
 import { MES_OPTIONS, OCASIAO_OPTIONS } from "@/lib/birthdays";
+import { generateLocalId } from "@/lib/ids";
 
 export type ClienteOption = {
   id: string;
@@ -58,7 +59,7 @@ const initialState: PedidoFormState = {};
 
 function createEmptyItem(receitas: ReceitaOption[]): PedidoItemForm {
   return {
-    id: crypto.randomUUID(),
+    id: generateLocalId(),
     receitaId: receitas[0]?.id ?? "",
     quantidade: "1",
     precoFinalUnitario: "",
@@ -105,7 +106,7 @@ export function PedidoForm({
   const [items, setItems] = useState<PedidoItemForm[]>(
     pedido?.itens.length
       ? pedido.itens.map((item) => ({
-          id: crypto.randomUUID(),
+          id: generateLocalId(),
           receitaId: item.receitaId,
           quantidade: item.quantidade,
           precoFinalUnitario: item.precoFinalUnitario,
