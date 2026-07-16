@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { Cake, CirclePlus, Trash2, UserPlus } from "lucide-react";
 import { saveCliente, type ClienteFormState } from "@/app/clientes/actions";
+import { generateLocalId } from "@/lib/ids";
 import { MES_OPTIONS, OCASIAO_OPTIONS } from "@/lib/birthdays";
 
 type AniversarianteFormItem = {
@@ -33,7 +34,7 @@ const initialState: ClienteFormState = {};
 
 function createEmptyAniversariante(): AniversarianteFormItem {
   return {
-    id: crypto.randomUUID(),
+    id: generateLocalId(),
     nome: "",
     dia: "",
     mes: "",

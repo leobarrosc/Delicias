@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useActionState } from "react";
 import { CirclePlus, CookingPot, Trash2 } from "lucide-react";
 import { saveReceita, type ReceitaFormState } from "@/app/receitas/actions";
+import { generateLocalId } from "@/lib/ids";
 
 type InsumoOption = {
   id: string;
@@ -48,7 +49,7 @@ function createEmptyItem(insumos: InsumoOption[]): ReceitaFormItem {
     "g";
 
   return {
-    id: crypto.randomUUID(),
+    id: generateLocalId(),
     insumoId: firstInsumo?.id ?? "",
     quantidade: "",
     unidade: firstUnit,
