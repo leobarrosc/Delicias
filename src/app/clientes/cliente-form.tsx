@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Cake, CirclePlus, Trash2, UserPlus } from "lucide-react";
 import { saveCliente, type ClienteFormState } from "@/app/clientes/actions";
 import { generateLocalId } from "@/lib/ids";
@@ -16,18 +16,21 @@ type AniversarianteFormItem = {
   observacoes: string;
 };
 
+export type ClienteEditData = {
+  id: string;
+  nome: string;
+  telefone: string;
+  whatsapp: string;
+  email: string;
+  dataNascimento: string;
+  endereco: string;
+  observacoes: string;
+  aniversariantes: AniversarianteFormItem[];
+};
+
 type ClienteFormProps = {
-  cliente?: {
-    id: string;
-    nome: string;
-    telefone: string;
-    whatsapp: string;
-    email: string;
-    dataNascimento: string;
-    endereco: string;
-    observacoes: string;
-    aniversariantes: AniversarianteFormItem[];
-  };
+  cliente?: ClienteEditData;
+  onSaved?: () => void;
 };
 
 const initialState: ClienteFormState = {};
@@ -44,11 +47,19 @@ function createEmptyAniversariante(): AniversarianteFormItem {
   };
 }
 
-export function ClienteForm({ cliente }: ClienteFormProps) {
+export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
   const [state, formAction, isPending] = useActionState(saveCliente, initialState);
   const [aniversariantes, setAniversariantes] = useState<
     AniversarianteFormItem[]
   >(cliente?.aniversariantes.length ? cliente.aniversariantes : []);
+  const savedRef = useRef(false);
+
+  useEffect(() => {
+    if (state.success && !savedRef.current) {
+      savedRef.current = true;
+      onSaved?.();
+    }
+  }, [state.success, onSaved]);
 
   function addAniversariante() {
     setAniversariantes((currentItems) => [
@@ -82,12 +93,12 @@ export function ClienteForm({ cliente }: ClienteFormProps) {
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm"
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
     >
       <input type="hidden" name="id" defaultValue={cliente?.id} />
 
-      <div className="mb-5 flex items-center gap-3">
-        <span className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
+      <div className="mb-5 flex items-center gap-3 pr-10">
+        <span className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
           <UserPlus className="size-5" aria-hidden="true" />
         </span>
         <div>

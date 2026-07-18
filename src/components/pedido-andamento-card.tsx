@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   CakeSlice,
   CalendarDays,
@@ -67,6 +68,7 @@ type PedidoAndamentoCardProps = {
   pedido: PedidoAndamento;
   clientes: ClienteOption[];
   receitas: ReceitaOption[];
+  fretePadrao: string;
 };
 
 function formatMoney(value: number) {
@@ -80,7 +82,9 @@ export function PedidoAndamentoCard({
   pedido,
   clientes,
   receitas,
+  fretePadrao,
 }: PedidoAndamentoCardProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
 
@@ -100,7 +104,7 @@ export function PedidoAndamentoCard({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`group flex flex-col rounded-xl border border-l-4 border-stone-200 ${accentBorder} bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600`}
+        className={`group flex flex-col rounded-xl border border-l-4 border-stone-200 ${accentBorder} bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-brand-500/40 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600`}
       >
         <div className="flex w-full items-start justify-between gap-2">
           <p className="truncate text-sm font-semibold text-stone-950">
@@ -177,7 +181,7 @@ export function PedidoAndamentoCard({
         onClose={closeDialog}
         label={`Pedido de ${pedido.clienteNome}`}
       >
-        <div className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+        <div className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm">
           <div className="mb-4 flex items-center gap-3 pr-10">
             <div className="min-w-0">
               <h2 className="truncate text-lg font-semibold text-stone-950">
@@ -320,7 +324,12 @@ export function PedidoAndamentoCard({
               <PedidoForm
                 clientes={clientes}
                 receitas={receitas}
+                fretePadrao={fretePadrao}
                 pedido={pedido.edicao}
+                onSaved={() => {
+                  closeDialog();
+                  router.refresh();
+                }}
               />
             </div>
           ) : null}

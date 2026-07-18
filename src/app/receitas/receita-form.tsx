@@ -1,16 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useActionState } from "react";
 import { CirclePlus, CookingPot, Trash2 } from "lucide-react";
 import { saveReceita, type ReceitaFormState } from "@/app/receitas/actions";
 import { generateLocalId } from "@/lib/ids";
 
-type InsumoOption = {
+export type InsumoOption = {
   id: string;
   nome: string;
   unidadeBase: string;
   custoUnitarioBase: string;
+};
+
+export type CategoriaOption = {
+  id: string;
+  nome: string;
 };
 
 type ReceitaFormItem = {
@@ -20,15 +25,21 @@ type ReceitaFormItem = {
   unidade: string;
 };
 
+export type ReceitaEditData = {
+  id: string;
+  nome: string;
+  fotoUrl: string;
+  categoriaId: string;
+  rendimento: string;
+  atualizarCustoAutomaticamente: boolean;
+  itens: ReceitaFormItem[];
+};
+
 type ReceitaFormProps = {
   insumos: InsumoOption[];
-  receita?: {
-    id: string;
-    nome: string;
-    rendimento: string;
-    atualizarCustoAutomaticamente: boolean;
-    itens: ReceitaFormItem[];
-  };
+  categorias: CategoriaOption[];
+  receita?: ReceitaEditData;
+  onSaved?: () => void;
 };
 
 const initialState: ReceitaFormState = {};
@@ -42,11 +53,14 @@ const unitOptions = [
   { value: "unidade", label: "unidade", baseUnit: "unidade" },
 ];
 
+const inputClassName =
+  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+
 function createEmptyItem(insumos: InsumoOption[]): ReceitaFormItem {
   const firstInsumo = insumos[0];
   const firstUnit =
-    unitOptions.find((unit) => unit.baseUnit === firstInsumo?.unidadeBase)?.value ??
-    "g";
+    unitOptions.find((unit) => unit.baseUnit === firstInsumo?.unidadeBase)
+      ?.value ?? "g";
 
   return {
     id: generateLocalId(),
@@ -66,16 +80,30 @@ function getCompatibleUnits(insumoId: string, insumos: InsumoOption[]) {
   return unitOptions.filter((unit) => unit.baseUnit === selectedInsumo.unidadeBase);
 }
 
-export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
+export function ReceitaForm({
+  insumos,
+  categorias,
+  receita,
+  onSaved,
+}: ReceitaFormProps) {
   const [state, formAction, isPending] = useActionState(saveReceita, initialState);
   const [items, setItems] = useState<ReceitaFormItem[]>(
     receita?.itens.length ? receita.itens : [createEmptyItem(insumos)],
   );
+  const savedRef = useRef(false);
 
   const insumoById = useMemo(
     () => new Map(insumos.map((insumo) => [insumo.id, insumo])),
     [insumos],
   );
+
+  // Avisa o modal quando salva com sucesso, para fechar e recarregar a lista.
+  useEffect(() => {
+    if (state.success && !savedRef.current) {
+      savedRef.current = true;
+      onSaved?.();
+    }
+  }, [state.success, onSaved]);
 
   function updateItem(id: string, changes: Partial<ReceitaFormItem>) {
     setItems((currentItems) =>
@@ -84,10 +112,7 @@ export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
           return item;
         }
 
-        const nextItem = {
-          ...item,
-          ...changes,
-        };
+        const nextItem = { ...item, ...changes };
 
         if (changes.insumoId) {
           const compatibleUnits = getCompatibleUnits(changes.insumoId, insumos);
@@ -120,12 +145,12 @@ export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm"
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
     >
       <input type="hidden" name="id" defaultValue={receita?.id} />
 
-      <div className="mb-5 flex items-center gap-3">
-        <span className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
+      <div className="mb-5 flex items-center gap-3 pr-10">
+        <span className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
           <CookingPot className="size-5" aria-hidden="true" />
         </span>
         <div>
@@ -138,29 +163,61 @@ export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-[1fr_160px]">
+      <div className="grid gap-4 md:grid-cols-2">
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Nome da receita</span>
+          <span className="text-sm font-medium text-stone-700">
+            Nome da receita
+          </span>
           <input
             name="nome"
             defaultValue={receita?.nome}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className={inputClassName}
             placeholder="Brigadeiro gourmet"
             required
           />
         </label>
 
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Quantas unidades rende</span>
+          <span className="text-sm font-medium text-stone-700">Categoria</span>
+          <select
+            name="categoriaId"
+            defaultValue={receita?.categoriaId ?? ""}
+            className={inputClassName}
+          >
+            <option value="">Sem categoria</option>
+            {categorias.map((categoria) => (
+              <option key={categoria.id} value={categoria.id}>
+                {categoria.nome}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium text-stone-700">
+            Quantas unidades rende
+          </span>
           <input
             name="rendimento"
             type="number"
             step="1"
             min="1"
             defaultValue={receita?.rendimento}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className={inputClassName}
             placeholder="20"
             required
+          />
+        </label>
+
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium text-stone-700">
+            Foto da receita (URL)
+          </span>
+          <input
+            name="fotoUrl"
+            defaultValue={receita?.fotoUrl}
+            className={inputClassName}
+            placeholder="https://... (opcional)"
           />
         </label>
       </div>
@@ -173,7 +230,7 @@ export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
           className="mt-1 size-4 rounded border-stone-300 text-brand-600 focus:ring-brand-600"
         />
         <span>
-          <span className="block text-sm font-medium text-stone-800">
+          <span className="block text-sm font-medium text-stone-700">
             Atualizar custo sozinho
           </span>
           <span className="block text-sm text-stone-500">
@@ -184,7 +241,9 @@ export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
 
       <div className="mt-5">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold text-stone-900">Ingredientes usados</h3>
+          <h3 className="text-sm font-semibold text-stone-900">
+            Ingredientes usados
+          </h3>
           <button
             type="button"
             onClick={addItem}
@@ -221,7 +280,7 @@ export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
                       onChange={(event) =>
                         updateItem(item.id, { insumoId: event.target.value })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className={inputClassName}
                       required
                     >
                       {insumos.map((insumo) => (
@@ -251,21 +310,23 @@ export function ReceitaForm({ insumos, receita }: ReceitaFormProps) {
                       onChange={(event) =>
                         updateItem(item.id, { quantidade: event.target.value })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className={inputClassName}
                       placeholder="100"
                       required
                     />
                   </label>
 
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-sm font-medium text-stone-700">Unidade</span>
+                    <span className="text-sm font-medium text-stone-700">
+                      Unidade
+                    </span>
                     <select
                       name="unidade"
                       value={item.unidade}
                       onChange={(event) =>
                         updateItem(item.id, { unidade: event.target.value })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className={inputClassName}
                       required
                     >
                       {compatibleUnits.map((unit) => (

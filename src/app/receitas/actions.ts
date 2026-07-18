@@ -14,9 +14,21 @@ import { areUnitsCompatible, type SupportedUnit } from "@/lib/units";
 
 const supportedUnits = ["kg", "g", "L", "ml", "duzia", "unidade"] as const;
 
+const optionalTextSchema = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.string().trim().optional(),
+);
+
+const optionalUrlSchema = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.string().trim().url("Cole um endereço de imagem válido (https://...).").optional(),
+);
+
 const recipeHeaderSchema = z.object({
   id: z.string().optional(),
   nome: z.string().trim().min(2, "Digite o nome da receita."),
+  categoriaId: optionalTextSchema,
+  fotoUrl: optionalUrlSchema,
   rendimento: z.coerce
     .number()
     .int("Digite quantas unidades a receita rende.")
@@ -52,6 +64,8 @@ function parseRecipeForm(formData: FormData) {
   const header = recipeHeaderSchema.safeParse({
     id: formData.get("id")?.toString(),
     nome: formData.get("nome"),
+    categoriaId: formData.get("categoriaId"),
+    fotoUrl: formData.get("fotoUrl"),
     rendimento: formData.get("rendimento"),
     atualizarCustoAutomaticamente:
       formData.get("atualizarCustoAutomaticamente") === "on",
@@ -120,8 +134,15 @@ export async function saveReceita(
   }
 
   const userId = await getCurrentUserId();
-  const { id, nome, rendimento, atualizarCustoAutomaticamente, itens } =
-    parsed.data;
+  const {
+    id,
+    nome,
+    categoriaId,
+    fotoUrl,
+    rendimento,
+    atualizarCustoAutomaticamente,
+    itens,
+  } = parsed.data;
   const uniqueInsumoIds = [...new Set(itens.map((item) => item.insumoId))];
 
   const insumos = await prisma.insumo.findMany({
@@ -200,6 +221,8 @@ export async function saveReceita(
     await prisma.$transaction(async (tx) => {
       const recipeData = {
         nome,
+        categoriaId: categoriaId ?? null,
+        fotoUrl: fotoUrl ?? null,
         rendimento,
         atualizarCustoAutomaticamente,
         custoTotal: formatDecimal(custoTotalAtual, 2),
@@ -256,9 +279,77 @@ export async function saveReceita(
   }
 
   revalidatePath("/receitas");
+  revalidatePath("/");
 
   return {
     success: id ? "Receita salva com sucesso." : "Receita cadastrada com sucesso.",
+  };
+}
+
+// Carrega o detalhe de UMA receita sob demanda (quando a usuária clica).
+// A lista traz só o resumo, então nunca mantemos N receitas completas em
+// memória — cada detalhe é buscado ao abrir e descartado ao fechar.
+export async function carregarReceitaDetalhe(id: string): Promise<{
+  id: string;
+  nome: string;
+  fotoUrl: string;
+  categoriaId: string;
+  rendimento: string;
+  atualizarCustoAutomaticamente: boolean;
+  itens: {
+    id: string;
+    insumoId: string;
+    insumoNome: string;
+    unidadeBase: string;
+    quantidade: string;
+    unidade: string;
+    custoTotal: number;
+  }[];
+} | null> {
+  const userId = await getCurrentUserId();
+  const receita = await prisma.receita.findFirst({
+    where: {
+      id,
+      userId,
+      ativo: true,
+    },
+    include: {
+      itens: {
+        orderBy: {
+          createdAt: "asc",
+        },
+        include: {
+          insumo: {
+            select: {
+              nome: true,
+              unidadeBase: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!receita) {
+    return null;
+  }
+
+  return {
+    id: receita.id,
+    nome: receita.nome,
+    fotoUrl: receita.fotoUrl ?? "",
+    categoriaId: receita.categoriaId ?? "",
+    rendimento: receita.rendimento?.toString() ?? "",
+    atualizarCustoAutomaticamente: receita.atualizarCustoAutomaticamente,
+    itens: receita.itens.map((item) => ({
+      id: item.id,
+      insumoId: item.insumoId,
+      insumoNome: item.insumo.nome,
+      unidadeBase: item.insumo.unidadeBase,
+      quantidade: item.quantidade.toString(),
+      unidade: item.unidade,
+      custoTotal: item.custoTotal.toNumber(),
+    })),
   };
 }
 
@@ -282,6 +373,7 @@ export async function deactivateReceita(formData: FormData) {
   });
 
   revalidatePath("/receitas");
+  revalidatePath("/");
 }
 
 export async function recalculateReceita(formData: FormData) {
@@ -302,4 +394,5 @@ export async function recalculateReceita(formData: FormData) {
   });
 
   revalidatePath("/receitas");
+  revalidatePath("/");
 }

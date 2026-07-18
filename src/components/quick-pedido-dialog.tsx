@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ClipboardPlus } from "lucide-react";
 import {
   PedidoForm,
@@ -12,9 +13,15 @@ import { Modal } from "@/components/modal";
 type QuickPedidoDialogProps = {
   clientes: ClienteOption[];
   receitas: ReceitaOption[];
+  fretePadrao: string;
 };
 
-export function QuickPedidoDialog({ clientes, receitas }: QuickPedidoDialogProps) {
+export function QuickPedidoDialog({
+  clientes,
+  receitas,
+  fretePadrao,
+}: QuickPedidoDialogProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,7 +39,12 @@ export function QuickPedidoDialog({ clientes, receitas }: QuickPedidoDialogProps
         <PedidoForm
           clientes={clientes}
           receitas={receitas}
+          fretePadrao={fretePadrao}
           permitirNovoCliente
+          onSaved={() => {
+            setOpen(false);
+            router.refresh();
+          }}
         />
       </Modal>
     </>

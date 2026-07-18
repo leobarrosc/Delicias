@@ -1,20 +1,26 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { PackagePlus } from "lucide-react";
 import { saveInsumo, type InsumoFormState } from "@/app/insumos/actions";
 
+export type MarcaOption = {
+  id: string;
+  nome: string;
+};
+
 type InsumoFormProps = {
+  marcas: MarcaOption[];
   insumo?: {
     id: string;
     nome: string;
+    marcaId: string;
+    fotoUrl: string;
     categoria: string;
-    quantidadeCompra: string;
-    unidadeCompra: string;
-    precoCompra: string;
+    conteudoEmbalagem: string;
+    unidadeEmbalagem: string;
     estoqueAtual: string;
     estoqueMinimo: string;
-    dataUltimaCompra: string;
   };
 };
 
@@ -29,37 +35,80 @@ const units = [
   { value: "unidade", label: "unidade" },
 ];
 
-export function InsumoForm({ insumo }: InsumoFormProps) {
+const baseUnitByUnit: Record<string, string> = {
+  kg: "g",
+  g: "g",
+  L: "ml",
+  ml: "ml",
+  duzia: "unidade",
+  unidade: "unidade",
+};
+
+const inputClassName =
+  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+
+export function InsumoForm({ marcas, insumo }: InsumoFormProps) {
   const [state, formAction, isPending] = useActionState(saveInsumo, initialState);
+  const [unidadeEmbalagem, setUnidadeEmbalagem] = useState(
+    insumo?.unidadeEmbalagem ?? "g",
+  );
+  const [registrarCompra, setRegistrarCompra] = useState(true);
+  const unidadeBase = baseUnitByUnit[unidadeEmbalagem] ?? "unidade";
+  const isEdicao = Boolean(insumo);
 
   return (
-    <form action={formAction} className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+    <form
+      action={formAction}
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
+    >
       <input type="hidden" name="id" defaultValue={insumo?.id} />
 
       <div className="mb-5 flex items-center gap-3">
-        <span className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
+        <span className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
           <PackagePlus className="size-5" aria-hidden="true" />
         </span>
         <div>
           <h2 className="text-lg font-semibold text-stone-950">
-            {insumo ? "Corrigir ingrediente" : "Novo ingrediente"}
+            {isEdicao ? "Corrigir ingrediente" : "Novo ingrediente"}
           </h2>
           <p className="text-sm text-stone-500">
-            Digite como você comprou. O sistema calcula quanto custa usar um pouco dele na receita.
+            Cadastre o produto como ele é na prateleira. As compras entram
+            separadas, com histórico.
           </p>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Nome do ingrediente</span>
+          <span className="text-sm font-medium text-stone-700">
+            Nome do ingrediente
+          </span>
           <input
             name="nome"
             defaultValue={insumo?.nome}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
-            placeholder="Chocolate em pó"
+            className={inputClassName}
+            placeholder="Leite condensado"
             required
           />
+        </label>
+
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium text-stone-700">Marca</span>
+          <select
+            name="marcaId"
+            defaultValue={insumo?.marcaId ?? ""}
+            className={inputClassName}
+          >
+            <option value="">Sem marca</option>
+            {marcas.map((marca) => (
+              <option key={marca.id} value={marca.id}>
+                {marca.nome}
+              </option>
+            ))}
+          </select>
+          <span className="text-xs text-stone-500">
+            Cadastre marcas com logo em Configurações.
+          </span>
         </label>
 
         <label className="flex flex-col gap-1.5">
@@ -67,91 +116,168 @@ export function InsumoForm({ insumo }: InsumoFormProps) {
           <input
             name="categoria"
             defaultValue={insumo?.categoria}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className={inputClassName}
             placeholder="Secos, laticínios, embalagens..."
             required
           />
         </label>
 
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Quanto veio na compra</span>
+        <label className="flex flex-col gap-1.5 xl:col-span-3">
+          <span className="text-sm font-medium text-stone-700">
+            Foto do produto (URL)
+          </span>
           <input
-            name="quantidadeCompra"
-            type="number"
-            step="0.001"
-            min="0.001"
-            defaultValue={insumo?.quantidadeCompra}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
-            placeholder="1"
-            required
+            name="fotoUrl"
+            defaultValue={insumo?.fotoUrl}
+            className={inputClassName}
+            placeholder="https://... (opcional)"
           />
         </label>
 
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Unidade da compra</span>
-          <select
-            name="unidadeCompra"
-            defaultValue={insumo?.unidadeCompra ?? "kg"}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
-          >
-            {units.map((unit) => (
-              <option key={unit.value} value={unit.value}>
-                {unit.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium text-stone-700">
+            Conteúdo da embalagem
+          </span>
+          <div className="grid grid-cols-[1fr_110px] gap-2">
+            <input
+              name="conteudoEmbalagem"
+              type="number"
+              step="0.001"
+              min="0.001"
+              defaultValue={insumo?.conteudoEmbalagem}
+              className={inputClassName}
+              placeholder="395"
+              required
+            />
+            <select
+              name="unidadeEmbalagem"
+              value={unidadeEmbalagem}
+              onChange={(event) => setUnidadeEmbalagem(event.target.value)}
+              className={inputClassName}
+            >
+              {units.map((unit) => (
+                <option key={unit.value} value={unit.value}>
+                  {unit.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <span className="text-xs text-stone-500">
+            Ex.: a caixinha de leite condensado tem 395 g.
+          </span>
+        </div>
 
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Quanto você pagou</span>
-          <input
-            name="precoCompra"
-            type="number"
-            step="0.01"
-            min="0.01"
-            defaultValue={insumo?.precoCompra}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
-            placeholder="18.90"
-            required
-          />
-        </label>
-
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Data da última compra</span>
-          <input
-            name="dataUltimaCompra"
-            type="date"
-            defaultValue={insumo?.dataUltimaCompra}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Quanto tem hoje em estoque</span>
-          <input
-            name="estoqueAtual"
-            type="number"
-            step="0.001"
-            min="0"
-            defaultValue={insumo?.estoqueAtual}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
-            placeholder="Opcional"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-700">Avisar quando chegar em</span>
+          <span className="text-sm font-medium text-stone-700">
+            Avisar quando chegar em
+          </span>
           <input
             name="estoqueMinimo"
             type="number"
             step="0.001"
             min="0"
             defaultValue={insumo?.estoqueMinimo}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className={inputClassName}
             placeholder="Opcional"
           />
+          <span className="text-xs text-stone-500">
+            Estoque mínimo, em {unidadeBase}.
+          </span>
         </label>
+
+        {isEdicao ? (
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-stone-700">
+              Ajustar estoque atual
+            </span>
+            <input
+              name="estoqueAtual"
+              type="number"
+              step="0.001"
+              defaultValue={insumo?.estoqueAtual}
+              className={inputClassName}
+              placeholder="Opcional"
+            />
+            <span className="text-xs text-stone-500">
+              Em {unidadeBase}. Use para acertar perdas e sobras.
+            </span>
+          </label>
+        ) : null}
       </div>
+
+      {!isEdicao ? (
+        <div className="mt-4">
+          <label className="flex items-start gap-3 rounded-lg border border-stone-200 p-3">
+            <input
+              name="registrarCompra"
+              type="checkbox"
+              checked={registrarCompra}
+              onChange={(event) => setRegistrarCompra(event.target.checked)}
+              className="mt-1 size-4 rounded border-stone-300 text-brand-600 focus:ring-brand-600"
+            />
+            <span>
+              <span className="block text-sm font-medium text-stone-700">
+                Já comprei — registrar a primeira compra
+              </span>
+              <span className="block text-sm text-stone-500">
+                Desmarque para cadastrar o produto sem compra. O custo fica
+                zerado até a primeira compra.
+              </span>
+            </span>
+          </label>
+
+          {registrarCompra ? (
+            <div className="mt-3 rounded-lg border border-dashed border-stone-300 p-3">
+              <div className="grid gap-4 md:grid-cols-3">
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-stone-700">
+                    Quantas embalagens
+                  </span>
+                  <input
+                    name="compraEmbalagens"
+                    type="number"
+                    step="0.001"
+                    min="0.001"
+                    className={inputClassName}
+                    placeholder="24"
+                    required
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-stone-700">
+                    Valor total pago
+                  </span>
+                  <input
+                    name="compraPrecoTotal"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    className={inputClassName}
+                    placeholder="112.90"
+                    required
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-stone-700">
+                    Data da compra
+                  </span>
+                  <input
+                    name="compraData"
+                    type="date"
+                    className={inputClassName}
+                  />
+                </label>
+              </div>
+              <p className="mt-2 text-xs text-stone-500">
+                Ex.: 24 caixinhas por R$ 112,90. O custo por {unidadeBase} e o
+                estoque saem daqui.
+              </p>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {state.error ? (
         <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -171,7 +297,11 @@ export function InsumoForm({ insumo }: InsumoFormProps) {
           disabled={isPending}
           className="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-stone-300"
         >
-          {isPending ? "Salvando..." : insumo ? "Salvar correções" : "Cadastrar ingrediente"}
+          {isPending
+            ? "Salvando..."
+            : isEdicao
+              ? "Salvar correções"
+              : "Cadastrar ingrediente"}
         </button>
       </div>
     </form>

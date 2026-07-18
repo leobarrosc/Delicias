@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { CirclePlus, ClipboardPlus, Trash2 } from "lucide-react";
 import { savePedido, type PedidoFormState } from "@/app/pedidos/actions";
 import { MES_OPTIONS, OCASIAO_OPTIONS } from "@/lib/birthdays";
@@ -28,6 +28,7 @@ export type PedidoEditData = {
   status: string;
   dataEntrega: string;
   multiplicadorLucro: string;
+  frete: string;
   observacoes: string;
   itens: {
     receitaId: string;
@@ -40,8 +41,10 @@ export type PedidoEditData = {
 type PedidoFormProps = {
   clientes: ClienteOption[];
   receitas: ReceitaOption[];
+  fretePadrao?: string;
   permitirNovoCliente?: boolean;
   pedido?: PedidoEditData;
+  onSaved?: () => void;
 };
 
 const NOVO_CLIENTE_ID = "__novo__";
@@ -85,8 +88,10 @@ function calculateSuggestedPrice(cost: number, multiplier: number) {
 export function PedidoForm({
   clientes,
   receitas,
+  fretePadrao = "0",
   permitirNovoCliente = false,
   pedido,
+  onSaved,
 }: PedidoFormProps) {
   const [state, formAction, isPending] = useActionState(savePedido, initialState);
   const [clienteId, setClienteId] = useState(
@@ -103,6 +108,15 @@ export function PedidoForm({
   const [multiplier, setMultiplier] = useState(
     pedido?.multiplicadorLucro ?? "2",
   );
+  const [frete, setFrete] = useState(pedido?.frete ?? fretePadrao);
+  const savedRef = useRef(false);
+
+  useEffect(() => {
+    if (state.success && !savedRef.current) {
+      savedRef.current = true;
+      onSaved?.();
+    }
+  }, [state.success, onSaved]);
   const [items, setItems] = useState<PedidoItemForm[]>(
     pedido?.itens.length
       ? pedido.itens.map((item) => ({
@@ -164,6 +178,8 @@ export function PedidoForm({
     { cost: 0, suggested: 0, final: 0 },
   );
   const estimatedProfit = roundMoney(totals.final - totals.cost);
+  const numericFrete = Math.max(Number(frete) || 0, 0);
+  const totalComFrete = roundMoney(totals.final + numericFrete);
 
   function updateItem(id: string, changes: Partial<PedidoItemForm>) {
     setItems((currentItems) =>
@@ -193,7 +209,7 @@ export function PedidoForm({
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm"
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
     >
       <input type="hidden" name="id" defaultValue={pedido?.id} />
 
@@ -422,6 +438,22 @@ export function PedidoForm({
           </span>
         </label>
 
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium text-stone-700">Frete (R$)</span>
+          <input
+            name="frete"
+            type="number"
+            step="0.01"
+            min="0"
+            value={frete}
+            onChange={(event) => setFrete(event.target.value)}
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+          />
+          <span className="text-xs text-stone-500">
+            Deixe zerado para retirada no local.
+          </span>
+        </label>
+
         <label className="flex flex-col gap-1.5 md:col-span-2">
           <span className="text-sm font-medium text-stone-700">Observações</span>
           <textarea
@@ -581,8 +613,20 @@ export function PedidoForm({
         </div>
         <div>
           <dt className="text-stone-500">Lucro estimado</dt>
-          <dd className="font-semibold text-stone-950">
+          <dd className="font-semibold text-emerald-700">
             {formatMoney(estimatedProfit)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-stone-500">Frete</dt>
+          <dd className="font-semibold text-stone-950">
+            {formatMoney(numericFrete)}
+          </dd>
+        </div>
+        <div className="sm:col-span-3">
+          <dt className="text-stone-500">Total a cobrar (com frete)</dt>
+          <dd className="text-lg font-bold text-brand-500">
+            {formatMoney(totalComFrete)}
           </dd>
         </div>
       </dl>

@@ -231,6 +231,7 @@ export async function saveCliente(
   }
 
   revalidatePath("/clientes");
+  revalidatePath("/");
 
   return {
     success: id ? "Cliente salvo com sucesso." : "Cliente cadastrado com sucesso.",
@@ -257,4 +258,59 @@ export async function deactivateCliente(formData: FormData) {
   });
 
   revalidatePath("/clientes");
+  revalidatePath("/");
+}
+
+function formatDateInput(value: Date | null) {
+  return value?.toISOString().slice(0, 10) ?? "";
+}
+
+// Detalhe completo de um cliente, carregado só quando a usuária clica —
+// mantém a lista leve e nunca segura todos os clientes completos em memória.
+export async function carregarClienteDetalhe(id: string) {
+  const userId = await getCurrentUserId();
+  const cliente = await prisma.cliente.findFirst({
+    where: {
+      id,
+      userId,
+      ativo: true,
+    },
+    include: {
+      aniversariantes: {
+        orderBy: {
+          nome: "asc",
+        },
+      },
+      _count: {
+        select: {
+          pedidos: true,
+        },
+      },
+    },
+  });
+
+  if (!cliente) {
+    return null;
+  }
+
+  return {
+    id: cliente.id,
+    nome: cliente.nome,
+    telefone: cliente.telefone ?? "",
+    whatsapp: cliente.whatsapp ?? "",
+    email: cliente.email ?? "",
+    dataNascimento: formatDateInput(cliente.dataNascimento),
+    endereco: cliente.endereco ?? "",
+    observacoes: cliente.observacoes ?? "",
+    totalPedidos: cliente._count.pedidos,
+    aniversariantes: cliente.aniversariantes.map((aniversariante) => ({
+      id: aniversariante.id,
+      nome: aniversariante.nome,
+      dia: String(aniversariante.dia),
+      mes: String(aniversariante.mes),
+      ano: aniversariante.ano ? String(aniversariante.ano) : "",
+      ocasiao: aniversariante.ocasiao,
+      observacoes: aniversariante.observacoes ?? "",
+    })),
+  };
 }

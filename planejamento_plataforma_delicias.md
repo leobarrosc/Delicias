@@ -1,5 +1,61 @@
 # Planejamento da Plataforma Web **Delícias**
 
+## 0. Design atual (prompt de referência)
+
+> Use este bloco como prompt ao gerar ou revisar telas, para manter a
+> identidade visual consistente.
+
+**Tema:** dashboard administrativo escuro no estilo **Gentelella v4**,
+reconstruído 100% em **Tailwind CSS** (sem Bootstrap/jQuery). Dark por padrão.
+
+**Paleta (via `tailwind.config.ts`):**
+- Fundo da página `#0B1220`; superfície de cards/painéis `#111A2C` (token
+  `bg-card`); bordas sutis `#1D2A3F` (`border-stone-200`, escala invertida).
+- Texto: base `#8B9BB4` (`text-stone-500`), forte `#EAF0F8`
+  (`text-stone-950`), títulos `#DCE4F0` (`text-stone-700`).
+- Acento **teal** `#2DD4BF` (`brand-500`) em botões, valores de destaque,
+  item ativo do menu e chips de categoria.
+- Cores de status em versão dark (fundo tintado escuro + texto claro):
+  âmbar (orçamento), azul-céu (produção), esmeralda (concluído/lucro),
+  vermelho (cancelado/estoque baixo).
+
+**Layout (shell):**
+- Sidebar escura fixa à esquerda (`bg-stone-800`): logo no topo, seção
+  "Geral", item ativo com borda esquerda teal + fundo escurecido, e o
+  **lobby da usuária fixo no rodapé esquerdo** (avatar + nome + "Minha
+  conta"). Recolhível pelo hambúrguer no desktop; vira drawer no mobile.
+- Topbar clara-escura com hambúrguer à esquerda e **data + relógio ao vivo
+  no canto superior direito**.
+- Conteúdo com kicker "DELÍCIAS" em maiúsculas acima do título da página.
+- Rodapé discreto.
+
+**Padrões de componente:**
+- Painéis: `border border-stone-200 bg-card`, título com borda inferior
+  dupla (`border-b-2`).
+- **Formulários de cadastro/edição abrem em pop-up central** (componente
+  `Modal`: overlay preto, Esc, trava scroll, botão X). Vale para Nova
+  receita, Novo cliente, Novo pedido rápido e detalhes.
+- **Listas longas são compactas e paginadas/buscáveis** (receitas,
+  clientes, carteira de aniversariantes, histórico de pedidos). Ênfase em
+  miniatura de imagem quando houver (receita, produto, logo de marca).
+- **Detalhe sob demanda:** a lista carrega só o resumo; ao clicar, o
+  detalhe completo é buscado via server action e descartado ao fechar o
+  modal — nunca manter N registros completos em memória.
+- Ícones: `lucide-react`. Fonte: Helvetica Neue / Roboto.
+- Imagens são **URLs** por enquanto (campo de texto + miniatura com
+  fallback); trocar por upload (Vercel Blob/Cloudinary) no futuro.
+
+**Navegação (menu "Geral"):** Dashboard, Insumos, Receitas, Clientes,
+Pedidos (histórico), Financeiro, Configurações. O Dashboard concentra a
+criação rápida de pedidos e os pedidos em andamento; **Pedidos** é o
+histórico completo (todos os status, com busca e mudança de status).
+
+**Configurações** centraliza: frete padrão, **mensagens de WhatsApp**
+(templates com `{cliente}`, `{aniversariante}`, `{ocasiao}`), categorias de
+receitas e marcas (com logo).
+
+---
+
 ## 1. Visão geral
 
 A **Delícias** será uma plataforma web para confeiteiras que têm baixo domínio tecnológico. O foco principal é permitir que a usuária cadastre insumos, monte receitas, calcule custo de produção, defina preço de venda com margem de lucro e acompanhe pedidos/clientes.
@@ -66,23 +122,35 @@ Exemplos:
 - Gás
 - Energia elétrica, opcionalmente como custo indireto
 
-Campos sugeridos:
+Campos do produto (como ele é na prateleira):
 
 - Nome do insumo.
+- Marca (ex.: Italac), opcional.
 - Categoria: ingrediente, embalagem, descartável, custo indireto.
-- Quantidade comprada.
-- Unidade da compra: kg, g, L, ml, unidade, pacote, caixa, dúzia etc.
-- Preço pago.
-- Custo por unidade base calculado automaticamente.
-- Estoque atual, opcional.
+- Conteúdo da embalagem + unidade (ex.: 395 g por caixinha).
+- Custo por unidade base calculado automaticamente a partir da última compra.
+- Estoque atual (em unidade base), alimentado pelas compras.
 - Estoque mínimo, opcional.
 - Data da última compra.
-- Observações.
+
+As compras são registros separados, com histórico por produto:
+
+- Quantidade de embalagens compradas (1 caixa, 24 unidades...).
+- Valor total pago.
+- Data da compra.
+
+Regras:
+
+- Produto existente → registrar nova compra (reposição): soma o estoque,
+  atualiza o custo unitário e entra no razão de movimentos como ENTRADA.
+- Produto novo → pode ser criado já com a primeira compra ou sem compra
+  (custo fica zerado até comprar).
 
 Exemplo:
 
-> Leite condensado 395g comprado por R$ 6,50.  
-> O sistema calcula quanto custa 1g ou quanto custa usar 1 lata inteira.
+> Leite condensado Italac, embalagem de 395 g.  
+> Compra: 24 caixinhas por R$ 112,90 → custo de R$ 0,0119 por grama,
+> estoque +9.480 g.
 
 ### 3.3 Conversão de medidas
 
