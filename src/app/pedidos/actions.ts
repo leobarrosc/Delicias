@@ -71,6 +71,10 @@ const pedidoSchema = z.object({
   multiplicadorLucro: z.coerce
     .number()
     .min(2, "Use pelo menos 2x para não vender abaixo do mínimo recomendado."),
+  frete: z.preprocess(
+    (value) => (value === "" || value === null ? 0 : value),
+    z.coerce.number().min(0, "O frete não pode ser negativo."),
+  ),
   observacoes: optionalTextSchema,
 });
 
@@ -111,6 +115,7 @@ function parsePedidoForm(formData: FormData) {
     status: formData.get("status") ?? "EM_ORCAMENTO",
     dataEntrega: formData.get("dataEntrega"),
     multiplicadorLucro: formData.get("multiplicadorLucro"),
+    frete: formData.get("frete"),
     observacoes: formData.get("observacoes"),
   });
 
@@ -191,6 +196,7 @@ export async function savePedido(
     status,
     dataEntrega,
     multiplicadorLucro,
+    frete,
     observacoes,
     itens,
   } = parsed.data;
@@ -383,6 +389,7 @@ export async function savePedido(
         status,
         dataEntrega: dataEntrega ?? null,
         multiplicadorLucro: formatDecimal(Math.max(multiplicadorLucro, 2), 2),
+        freteSnapshot: formatDecimal(Math.max(frete, 0), 2),
         custoTotalSnapshot: formatDecimal(custoTotal, 2),
         precoSugeridoSnapshot: formatDecimal(precoSugeridoTotal, 2),
         precoTotalSnapshot: formatDecimal(precoTotal, 2),

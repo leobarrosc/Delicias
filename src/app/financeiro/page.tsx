@@ -208,7 +208,7 @@ export default async function FinanceiroPage({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm">
         <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-stone-950">
@@ -303,7 +303,7 @@ export default async function FinanceiroPage({
         </p>
       </section>
 
-      <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm">
         <div className="mb-5">
           <h2 className="text-lg font-semibold text-stone-950">
             Últimos pedidos

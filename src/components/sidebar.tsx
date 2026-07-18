@@ -1,28 +1,37 @@
 import Link from "next/link";
-import { CakeSlice } from "lucide-react";
+import { CakeSlice, ChevronRight } from "lucide-react";
 import { navigationItems } from "@/lib/navigation";
 
 type SidebarProps = {
   activePath: string;
+  onNavigate?: () => void;
 };
 
-export function Sidebar({ activePath }: SidebarProps) {
+export function Sidebar({ activePath, onNavigate }: SidebarProps) {
   return (
-    <aside className="flex w-full flex-col border-b border-stone-200 bg-white px-4 py-4 md:min-h-screen md:w-72 md:border-b-0 md:border-r md:px-5 md:py-6">
-      <Link href="/" className="mb-4 flex items-center gap-3 md:mb-8">
-        <span className="flex size-11 items-center justify-center rounded-lg bg-brand-600 text-white">
-          <CakeSlice className="size-6" aria-hidden="true" />
+    <aside className="flex h-full min-h-screen w-full flex-col border-r border-stone-200 bg-stone-800 text-stone-500">
+      <Link
+        href="/"
+        onClick={onNavigate}
+        className="flex items-center gap-3 border-b border-white/10 px-4 py-4"
+      >
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-brand-600 text-white">
+          <CakeSlice className="size-5" aria-hidden="true" />
         </span>
         <span>
-          <span className="block text-lg font-semibold text-stone-950">Delícias</span>
-          <span className="block text-sm text-stone-500">{"Gest\u00e3o para confeiteiras"}</span>
+          <span className="block text-lg font-semibold text-white">
+            Delícias
+          </span>
+          <span className="block text-xs text-white/50">
+            Gestão para confeiteiras
+          </span>
         </span>
       </Link>
 
-      <nav
-        className="flex gap-2 overflow-x-auto pb-1 md:flex-1 md:flex-col md:gap-1 md:overflow-visible md:pb-0"
-        aria-label="Menu principal"
-      >
+      <nav className="flex-1 overflow-y-auto py-4" aria-label="Menu principal">
+        <h3 className="px-4 pb-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+          Geral
+        </h3>
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = activePath === item.href;
@@ -31,18 +40,38 @@ export function Sidebar({ activePath }: SidebarProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition ${
+              onClick={onNavigate}
+              className={`flex items-center gap-3 py-2.5 pr-4 text-sm transition ${
                 isActive
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-stone-700 hover:bg-brand-50 hover:text-brand-700"
+                  ? "border-l-4 border-brand-500 bg-black/40 pl-3 font-medium text-white"
+                  : "pl-4 text-stone-500 hover:bg-white/5 hover:text-white"
               }`}
             >
-              <Icon className="size-5" aria-hidden="true" />
+              <Icon className="size-5 shrink-0" aria-hidden="true" />
               {item.label}
             </Link>
           );
         })}
       </nav>
+
+      {/* Lobby da usuária, fixo no rodapé esquerdo. */}
+      <div className="border-t border-white/10 p-3">
+        <button
+          type="button"
+          className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition hover:bg-white/5"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-sm font-semibold text-white">
+            C
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-medium text-white">
+              Confeiteira Delícias
+            </span>
+            <span className="block text-xs text-white/50">Minha conta</span>
+          </span>
+          <ChevronRight className="size-4 text-white/40" aria-hidden="true" />
+        </button>
+      </div>
     </aside>
   );
 }
