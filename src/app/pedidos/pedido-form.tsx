@@ -209,7 +209,7 @@ export function PedidoForm({
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft"
     >
       <input type="hidden" name="id" defaultValue={pedido?.id} />
 
@@ -239,7 +239,7 @@ export function PedidoForm({
               setClienteId(event.target.value);
               setAniversarianteId("");
             }}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             required
           >
             {clientes.map((cliente) => (
@@ -261,7 +261,7 @@ export function PedidoForm({
               </span>
               <input
                 name="novoClienteNome"
-                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                 placeholder="Maria Souza"
                 required
               />
@@ -273,7 +273,7 @@ export function PedidoForm({
               </span>
               <input
                 name="novoClienteWhatsapp"
-                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                 placeholder="(11) 99999-9999 (opcional)"
               />
             </label>
@@ -288,7 +288,7 @@ export function PedidoForm({
             name="aniversarianteId"
             value={aniversarianteId}
             onChange={(event) => handleAniversarianteChange(event.target.value)}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
           >
             <option value="">Não informado</option>
             {!isNovoCliente
@@ -313,7 +313,7 @@ export function PedidoForm({
                 </span>
                 <input
                   name="novoAniversarianteNome"
-                  className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                  className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                   placeholder="Sofia"
                   required
                 />
@@ -326,7 +326,7 @@ export function PedidoForm({
                 <select
                   name="novoAniversarianteOcasiao"
                   defaultValue="Aniversário"
-                  className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                  className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                 >
                   {OCASIAO_OPTIONS.map((ocasiao) => (
                     <option key={ocasiao} value={ocasiao}>
@@ -348,7 +348,7 @@ export function PedidoForm({
                     onChange={(event) =>
                       setNovoAniversarianteDia(event.target.value)
                     }
-                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                     placeholder="14"
                     required
                   />
@@ -362,7 +362,7 @@ export function PedidoForm({
                     onChange={(event) =>
                       setNovoAniversarianteMes(event.target.value)
                     }
-                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                     required
                   >
                     <option value="">Escolha o mês</option>
@@ -381,7 +381,7 @@ export function PedidoForm({
                     type="number"
                     min="1900"
                     max={new Date().getFullYear()}
-                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                     placeholder="Opcional"
                   />
                 </label>
@@ -399,7 +399,7 @@ export function PedidoForm({
           <select
             name="status"
             defaultValue={pedido?.status ?? "EM_ORCAMENTO"}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
           >
             <option value="EM_ORCAMENTO">Ainda é orçamento</option>
             <option value="PRODUCAO">Começar produção</option>
@@ -415,7 +415,7 @@ export function PedidoForm({
             type="date"
             value={dataEntrega}
             onChange={(event) => setDataEntrega(event.target.value)}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
           />
         </label>
 
@@ -430,7 +430,7 @@ export function PedidoForm({
             min="2"
             value={multiplier}
             onChange={(event) => setMultiplier(event.target.value)}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             required
           />
           <span className="text-xs text-stone-500">
@@ -447,7 +447,7 @@ export function PedidoForm({
             min="0"
             value={frete}
             onChange={(event) => setFrete(event.target.value)}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
           />
           <span className="text-xs text-stone-500">
             Deixe zerado para retirada no local.
@@ -460,7 +460,7 @@ export function PedidoForm({
             name="observacoes"
             rows={3}
             defaultValue={pedido?.observacoes}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             placeholder="Tema, entrega, detalhes combinados..."
           />
         </label>
@@ -515,7 +515,7 @@ export function PedidoForm({
                       onChange={(event) =>
                         updateItem(item.id, { receitaId: event.target.value })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                       required
                     >
                       {receitas.map((receitaOption) => (
@@ -543,7 +543,7 @@ export function PedidoForm({
                       onChange={(event) =>
                         updateItem(item.id, { quantidade: event.target.value })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                       required
                     />
                   </label>
@@ -568,7 +568,7 @@ export function PedidoForm({
                           manualPrice: true,
                         })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                     />
                     <span className="text-xs text-stone-500">
                       Total: {formatMoney(finalUnitPrice * quantity)}

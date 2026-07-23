@@ -87,7 +87,7 @@ export default async function InsumosPage() {
     <div className="space-y-6">
       <InsumoForm marcas={marcas} />
 
-      <section className="border border-stone-200 bg-card p-4 shadow-sm md:p-5">
+      <section className="border border-stone-200 bg-card p-4 shadow-soft md:p-5">
         <div className="mb-4 border-b-2 border-stone-200 pb-2">
           <h2 className="text-lg font-medium text-stone-700">
             Ingredientes cadastrados

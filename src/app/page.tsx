@@ -470,7 +470,7 @@ export default async function DashboardPage() {
       </section>
 
       <div className="grid items-start gap-6 xl:grid-cols-3">
-        <section className="border border-stone-200 bg-card p-4 shadow-sm md:p-5 xl:col-span-2">
+        <section className="border border-stone-200 bg-card p-4 shadow-soft md:p-5 xl:col-span-2">
           <div className="mb-4 border-b-2 border-stone-200 pb-2">
             <h2 className="text-lg font-medium text-stone-700">
               Pedidos em andamento
@@ -501,7 +501,7 @@ export default async function DashboardPage() {
         </section>
 
         <div className="space-y-6">
-          <section className="border border-stone-200 bg-card p-4 shadow-sm">
+          <section className="border border-stone-200 bg-card p-4 shadow-soft">
             <div className="mb-3 flex items-center gap-2 border-b-2 border-stone-200 pb-2">
               <Cake className="size-4 text-brand-500" aria-hidden="true" />
               <h2 className="text-base font-medium text-stone-700">
@@ -553,7 +553,7 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="border border-stone-200 bg-card p-4 shadow-sm">
+          <section className="border border-stone-200 bg-card p-4 shadow-soft">
             <div className="mb-3 flex items-center gap-2 border-b-2 border-stone-200 pb-2">
               <AlertTriangle
                 className="size-4 text-amber-700"
@@ -594,7 +594,7 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="border border-stone-200 bg-card p-4 shadow-sm">
+          <section className="border border-stone-200 bg-card p-4 shadow-soft">
             <div className="mb-3 flex items-center gap-2 border-b-2 border-stone-200 pb-2">
               <TrendingUp
                 className="size-4 text-brand-500"

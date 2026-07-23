@@ -11,6 +11,10 @@ build
 
 # Template Gentelella usado apenas como referência visual local
 gentela-gh-pages/
+
+# Projeto Lovable separado, mantido só localmente. Não faz parte desta app —
+# também está excluído do tsconfig.json.
+lovable-project-3f638d7a/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

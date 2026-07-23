@@ -52,7 +52,7 @@ const CARTEIRA_PAGE_SIZE = 6;
 const CLIENTES_PAGE_SIZE = 8;
 
 const inputClassName =
-  "w-full rounded-md border border-stone-300 py-2 pl-9 pr-3 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+  "w-full rounded-md border border-stone-300 py-2 pl-9 pr-3 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
 
 function Pagination({
   page,
@@ -241,7 +241,7 @@ export function ClientesClient({
         </button>
       </div>
 
-      <section className="border border-stone-200 bg-card p-4 shadow-sm md:p-5">
+      <section className="border border-stone-200 bg-card p-4 shadow-soft md:p-5">
         <div className="mb-3 flex flex-col gap-3 border-b-2 border-stone-200 pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="flex items-center gap-2 text-lg font-medium text-stone-700">
             <Cake className="size-5 text-brand-500" aria-hidden="true" />
@@ -316,7 +316,7 @@ export function ClientesClient({
         />
       </section>
 
-      <section className="border border-stone-200 bg-card p-4 shadow-sm md:p-5">
+      <section className="border border-stone-200 bg-card p-4 shadow-soft md:p-5">
         <div className="mb-3 flex flex-col gap-3 border-b-2 border-stone-200 pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-medium text-stone-700">
             Clientes cadastrados
@@ -389,7 +389,7 @@ export function ClientesClient({
         onClose={closeDetail}
         label={selecionado ? `Cliente ${selecionado.nome}` : "Cliente"}
       >
-        <div className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm">
+        <div className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft">
           {loading || !detalhe ? (
             <div className="flex items-center gap-3 py-6 text-sm text-stone-500">
               <RefreshCw className="size-4 animate-spin" aria-hidden="true" />

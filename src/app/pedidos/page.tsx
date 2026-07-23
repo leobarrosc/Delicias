@@ -137,7 +137,7 @@ export default async function PedidosPage({
   }
 
   return (
-    <section className="border border-stone-200 bg-card p-4 shadow-sm md:p-5">
+    <section className="border border-stone-200 bg-card p-4 shadow-soft md:p-5">
       <div className="mb-4 border-b-2 border-stone-200 pb-2">
         <h2 className="text-lg font-medium text-stone-700">
           Histórico de pedidos
@@ -181,7 +181,7 @@ export default async function PedidosPage({
             name="q"
             defaultValue={busca}
             placeholder="Buscar por cliente"
-            className="w-full rounded-md border border-stone-300 py-2 pl-9 pr-3 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="w-full rounded-md border border-stone-300 py-2 pl-9 pr-3 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
           />
         </form>
       </div>

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Clock } from "@/components/clock";
 import { Sidebar } from "@/components/sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { navigationItems } from "@/lib/navigation";
 
 type AppShellProps = {
@@ -69,7 +70,10 @@ export function AppShell({ children }: AppShellProps) {
             <Menu className="size-5" aria-hidden="true" />
           </button>
 
-          <Clock />
+          <div className="flex items-center gap-1">
+            <Clock />
+            <ThemeToggle />
+          </div>
         </header>
 
         <main className="flex-1 px-4 py-5 md:px-6 md:py-6">
