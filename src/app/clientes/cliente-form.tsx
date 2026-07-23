@@ -93,7 +93,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft"
     >
       <input type="hidden" name="id" defaultValue={cliente?.id} />
 
@@ -117,7 +117,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
           <input
             name="nome"
             defaultValue={cliente?.nome}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             placeholder="Maria Souza"
             required
           />
@@ -128,7 +128,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
           <input
             name="whatsapp"
             defaultValue={cliente?.whatsapp}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             placeholder="(11) 99999-9999"
           />
         </label>
@@ -138,7 +138,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
           <input
             name="telefone"
             defaultValue={cliente?.telefone}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             placeholder="Opcional"
           />
         </label>
@@ -149,7 +149,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
             name="email"
             type="email"
             defaultValue={cliente?.email}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             placeholder="maria@email.com"
           />
         </label>
@@ -162,7 +162,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
             name="dataNascimento"
             type="date"
             defaultValue={cliente?.dataNascimento}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
           />
         </label>
 
@@ -171,7 +171,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
           <input
             name="endereco"
             defaultValue={cliente?.endereco}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             placeholder="Rua, número, bairro, cidade"
           />
         </label>
@@ -182,7 +182,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
             name="observacoes"
             defaultValue={cliente?.observacoes}
             rows={3}
-            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
             placeholder="Preferências, restrições, referências de entrega..."
           />
         </label>
@@ -229,7 +229,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
                         nome: event.target.value,
                       })
                     }
-                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                     placeholder="João"
                     required
                   />
@@ -247,7 +247,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
                         ocasiao: event.target.value,
                       })
                     }
-                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                   >
                     {OCASIAO_OPTIONS.map((ocasiao) => (
                       <option key={ocasiao} value={ocasiao}>
@@ -284,7 +284,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
                           dia: event.target.value,
                         })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                       placeholder="14"
                       required
                     />
@@ -302,7 +302,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
                           mes: event.target.value,
                         })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                       required
                     >
                       <option value="">Escolha o mês</option>
@@ -329,7 +329,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
                           ano: event.target.value,
                         })
                       }
-                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                      className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                       placeholder="Opcional"
                     />
                   </label>
@@ -347,7 +347,7 @@ export function ClienteForm({ cliente, onSaved }: ClienteFormProps) {
                         observacoes: event.target.value,
                       })
                     }
-                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                    className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
                     placeholder="Tema preferido, alergias, tamanho da festa..."
                   />
                 </label>

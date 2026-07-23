@@ -12,7 +12,7 @@ import {
 const initialState: ConfigFormState = {};
 
 const inputClassName =
-  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
 
 type ConfiguracaoGeralFormProps = {
   fretePadrao: string;

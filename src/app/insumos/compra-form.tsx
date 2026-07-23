@@ -15,7 +15,7 @@ type CompraFormProps = {
 const initialState: CompraFormState = {};
 
 const inputClassName =
-  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
 
 export function CompraForm({ insumoId, embalagemLabel }: CompraFormProps) {
   const [state, formAction, isPending] = useActionState(

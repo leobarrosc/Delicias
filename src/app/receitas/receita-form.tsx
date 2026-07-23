@@ -54,7 +54,7 @@ const unitOptions = [
 ];
 
 const inputClassName =
-  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
 
 function createEmptyItem(insumos: InsumoOption[]): ReceitaFormItem {
   const firstInsumo = insumos[0];
@@ -145,7 +145,7 @@ export function ReceitaForm({
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft"
     >
       <input type="hidden" name="id" defaultValue={receita?.id} />
 
@@ -227,7 +227,7 @@ export function ReceitaForm({
           name="atualizarCustoAutomaticamente"
           type="checkbox"
           defaultChecked={receita?.atualizarCustoAutomaticamente ?? true}
-          className="mt-1 size-4 rounded border-stone-300 text-brand-600 focus:ring-brand-600"
+          className="mt-1 size-4 rounded-sm border-stone-300 text-brand-600 focus:ring-brand-600"
         />
         <span>
           <span className="block text-sm font-medium text-stone-700">

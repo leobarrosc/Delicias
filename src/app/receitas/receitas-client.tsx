@@ -193,7 +193,7 @@ export function ReceitasClient({
         </button>
       </div>
 
-      <section className="border border-stone-200 bg-card p-4 shadow-sm md:p-5">
+      <section className="border border-stone-200 bg-card p-4 shadow-soft md:p-5">
         {receitas.length === 0 ? (
           <div className="rounded-lg border border-dashed border-stone-300 p-6 text-center text-sm text-stone-500">
             Nenhuma receita cadastrada ainda. Clique em “Nova receita”.
@@ -259,7 +259,7 @@ export function ReceitasClient({
         onClose={closeDetail}
         label={selecionada ? `Receita ${selecionada.nome}` : "Receita"}
       >
-        <div className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm">
+        <div className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft">
           {loading || !detalhe || !selecionada ? (
             <div className="flex items-center gap-3 py-6 text-sm text-stone-500">
               <RefreshCw className="size-4 animate-spin" aria-hidden="true" />

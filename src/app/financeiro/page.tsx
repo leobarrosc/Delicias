@@ -208,7 +208,7 @@ export default async function FinanceiroPage({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm">
+      <section className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft">
         <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-stone-950">
@@ -225,7 +225,7 @@ export default async function FinanceiroPage({
               <select
                 name="filtro"
                 defaultValue={period.filter}
-                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
               >
                 {filterOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -241,7 +241,7 @@ export default async function FinanceiroPage({
                 name="inicio"
                 type="date"
                 defaultValue={formatDateInput(period.start)}
-                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
               />
             </label>
 
@@ -251,7 +251,7 @@ export default async function FinanceiroPage({
                 name="fim"
                 type="date"
                 defaultValue={formatDateInput(addDays(period.end, -1))}
-                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                className="rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
               />
             </label>
 
@@ -303,7 +303,7 @@ export default async function FinanceiroPage({
         </p>
       </section>
 
-      <section className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm">
+      <section className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft">
         <div className="mb-5">
           <h2 className="text-lg font-semibold text-stone-950">
             Últimos pedidos

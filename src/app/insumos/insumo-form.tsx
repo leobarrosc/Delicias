@@ -45,7 +45,7 @@ const baseUnitByUnit: Record<string, string> = {
 };
 
 const inputClassName =
-  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
+  "rounded-md border border-stone-300 px-3 py-2 text-sm outline-hidden transition focus:border-brand-600 focus:ring-2 focus:ring-brand-100";
 
 export function InsumoForm({ marcas, insumo }: InsumoFormProps) {
   const [state, formAction, isPending] = useActionState(saveInsumo, initialState);
@@ -59,7 +59,7 @@ export function InsumoForm({ marcas, insumo }: InsumoFormProps) {
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-stone-200 bg-card p-5 shadow-sm"
+      className="rounded-lg border border-stone-200 bg-card p-5 shadow-soft"
     >
       <input type="hidden" name="id" defaultValue={insumo?.id} />
 
@@ -213,7 +213,7 @@ export function InsumoForm({ marcas, insumo }: InsumoFormProps) {
               type="checkbox"
               checked={registrarCompra}
               onChange={(event) => setRegistrarCompra(event.target.checked)}
-              className="mt-1 size-4 rounded border-stone-300 text-brand-600 focus:ring-brand-600"
+              className="mt-1 size-4 rounded-sm border-stone-300 text-brand-600 focus:ring-brand-600"
             />
             <span>
               <span className="block text-sm font-medium text-stone-700">
